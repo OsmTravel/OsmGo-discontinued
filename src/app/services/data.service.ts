@@ -71,16 +71,6 @@ export class DataService {
         return fc
     }
 
-    // TODO: Is this method still needed? It is not used anywhere.
-    addIconCache(idIcon: string, uri): void {
-        this.localStorage.set(idIcon, uri)
-    }
-
-    // TODO: Is this method still needed? It is not used anywhere.
-    getIconCache(idIcon: string): Promise<any> {
-        return this.localStorage.get(idIcon)
-    }
-
     loadGeojson$(type: OsmGoFCStorage): Observable<OsmGoFeatureCollection> {
         let storageKey: string
         switch (type) {
@@ -109,24 +99,6 @@ export class DataService {
                 return geojson
             })
         )
-    }
-
-    async getKeysCacheIcon(): Promise<string[]> {
-        let allKeys: string[] = await this.localStorage.keys()
-        return allKeys.filter(
-            (k) => /^circle/.test(k) || /^square/.test(k) || /^penta/.test(k)
-        )
-    }
-
-    async clearIconCache(): Promise<number> {
-        let keys: string[] = await this.getKeysCacheIcon()
-        let n: number = 0
-        for (let key of keys) {
-            console.log(key)
-            await this.localStorage.remove(key)
-            n++
-        }
-        return n
     }
 
     async clearCache(): Promise<void> {

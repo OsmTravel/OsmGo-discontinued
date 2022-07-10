@@ -230,49 +230,6 @@ describe('DataService', () => {
         })
     })
 
-    describe('icon cache', () => {
-        it('should be possible to write into icon cache', () => {
-            service.addIconCache('foobar', 'foo:bar')
-            expect(storageSpy.set.calls.count()).toBe(1)
-            expect(storageSpy.set.calls.mostRecent().args).toEqual([
-                'foobar',
-                'foo:bar',
-            ])
-        })
-
-        it('should be possible to read from icon cache', async () => {
-            storageSpy.get.and.returnValue(Promise.resolve('foo:bar'))
-            const actual = await service.getIconCache('foobar')
-            expect(storageSpy.get.calls.count()).toBe(1)
-            expect(actual).toBe('foo:bar')
-        })
-
-        it('should be possible to read icon keys from cache (filtered by certain prefixes)', async () => {
-            storageSpy.keys.and.returnValue(
-                Promise.resolve([
-                    'abc',
-                    'def',
-                    'circle_abc',
-                    'square_def',
-                    'penta_ghi',
-                ])
-            )
-            const actual = await service.getKeysCacheIcon()
-            expect(actual.length).toBe(3)
-            expect(actual[0]).toBe('circle_abc')
-            expect(actual[1]).toBe('square_def')
-            expect(actual[2]).toBe('penta_ghi')
-        })
-
-        it('should be possible to clear the icon cache', async () => {
-            service.getKeysCacheIcon = () => Promise.resolve(['foo', 'bar'])
-            const actual = await service.clearIconCache()
-            expect(storageSpy.remove.calls.count()).toBe(2)
-            expect(storageSpy.remove.calls.mostRecent().args).toEqual(['bar'])
-            expect(actual).toBe(2)
-        })
-    })
-
     describe('read/write geojson data', () => {
         describe('geojson', () => {
             it('should be possible to read geojson data', async () => {
