@@ -7,6 +7,7 @@ import {
     OsmGoFeatureCollection,
     OsmGoFeature,
     FeatureIdSource,
+    OsmGoFCStorage,
 } from '@osmgo/type'
 import { feature, featureCollection } from '@turf/turf'
 
@@ -80,8 +81,20 @@ export class DataService {
         return this.localStorage.get(idIcon)
     }
 
-    loadGeojson$(): Observable<OsmGoFeatureCollection> {
-        return from(this.localStorage.get('geojson')).pipe(
+    loadGeojson$(type: OsmGoFCStorage): Observable<OsmGoFeatureCollection> {
+        let storageKey: string
+        switch (type) {
+            case 'upstream':
+                storageKey = 'geojson'
+                break
+            case 'changed':
+                storageKey = 'geojsonChanged'
+                break
+            case 'bbox':
+                storageKey = 'geojsonBbox'
+                break
+        }
+        return from(this.localStorage.get(storageKey)).pipe(
             map((geojson: OsmGoFeatureCollection) => {
                 geojson = geojson
                     ? geojson
@@ -89,36 +102,10 @@ export class DataService {
                 for (const feature of geojson.features) {
                     this._geojson[feature.id] = feature
                 }
-                return geojson
-            })
-        )
-    }
-
-    loadGeojsonChanged$(): Observable<OsmGoFeatureCollection> {
-        return from(this.localStorage.get('geojsonChanged')).pipe(
-            map((geojson: OsmGoFeatureCollection) => {
-                geojson = geojson
-                    ? geojson
-                    : (featureCollection([]) as OsmGoFeatureCollection)
-                for (const feature of geojson.features) {
-                    this._geojsonChanged[feature.id] = feature
+                if (type === 'changed') {
+                    // At this point we know previously created elements from which we can determine the min ID.
+                    this.forceNextFeatureIdSync()
                 }
-
-                // At this point we know previously created elements from which we can determine the min ID.
-                this.forceNextFeatureIdSync()
-
-                return geojson
-            })
-        )
-    }
-
-    loadGeojsonBbox$(): Observable<OsmGoFeatureCollection> {
-        return from(this.localStorage.get('geojsonBbox')).pipe(
-            map((geojson: OsmGoFeatureCollection) => {
-                geojson = geojson
-                    ? geojson
-                    : (featureCollection([]) as OsmGoFeatureCollection)
-                this.geojsonBbox = geojson
                 return geojson
             })
         )

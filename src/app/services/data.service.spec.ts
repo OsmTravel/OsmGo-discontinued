@@ -278,7 +278,7 @@ describe('DataService', () => {
             it('should be possible to read geojson data', async () => {
                 const sample = featureCollection([point([0, 0])])
                 storageSpy.get.and.returnValue(Promise.resolve(sample))
-                const obs = service.loadGeojson$()
+                const obs = service.loadGeojson$('upstream')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojson',
@@ -289,7 +289,7 @@ describe('DataService', () => {
 
             it('should return empty feature collection if no data is stored', async () => {
                 storageSpy.get.and.returnValue(Promise.resolve(undefined))
-                const obs = service.loadGeojson$()
+                const obs = service.loadGeojson$('upstream')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojson',
@@ -406,7 +406,7 @@ describe('DataService', () => {
             it('should be possible to read changed geojson data', async () => {
                 const sample = featureCollection([point([0, 0])])
                 storageSpy.get.and.returnValue(Promise.resolve(sample))
-                const obs = service.loadGeojsonChanged$()
+                const obs = service.loadGeojson$('changed')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojsonChanged',
@@ -417,7 +417,7 @@ describe('DataService', () => {
 
             it('should return empty feature collection if no data is stored', async () => {
                 storageSpy.get.and.returnValue(Promise.resolve(undefined))
-                const obs = service.loadGeojsonChanged$()
+                const obs = service.loadGeojson$('changed')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojsonChanged',
@@ -528,7 +528,7 @@ describe('DataService', () => {
             it('should be possible to read bbox geojson data', async () => {
                 const sample = featureCollection([point([0, 0])])
                 storageSpy.get.and.returnValue(Promise.resolve(sample))
-                const obs = service.loadGeojsonBbox$()
+                const obs = service.loadGeojson$('bbox')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojsonBbox',
@@ -539,7 +539,7 @@ describe('DataService', () => {
 
             it('should return empty feature collection if no data is stored', async () => {
                 storageSpy.get.and.returnValue(Promise.resolve(undefined))
-                const obs = service.loadGeojsonBbox$()
+                const obs = service.loadGeojson$('bbox')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojsonBbox',

@@ -43,9 +43,9 @@ export class InitService {
             this.tagsService.loadLastTagsUsedIds$(),
             this.tagsService.loadHiddenTagsIds$(),
 
-            this.dataService.loadGeojson$(),
-            this.dataService.loadGeojsonChanged$(),
-            this.dataService.loadGeojsonBbox$()
+            this.dataService.loadGeojson$('upstream'),
+            this.dataService.loadGeojson$('changed'),
+            this.dataService.loadGeojson$('bbox')
         ).pipe(
             tap(() => {
                 this.isLoaded = true

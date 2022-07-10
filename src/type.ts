@@ -172,3 +172,5 @@ export interface CountryCode {
     /** Numeric ISO 3166-1 country code */
     'country-code': string
 }
+
+export type OsmGoFCStorage = 'upstream' | 'changed' | 'bbox'
