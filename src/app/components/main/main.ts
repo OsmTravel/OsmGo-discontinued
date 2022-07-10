@@ -207,11 +207,17 @@ export class MainPage implements AfterViewInit {
             .subscribe({
                 next: (newDataJson) => {
                     // data = geojson a partir du serveur osm
-                    this.dataService.setGeojsonBbox(newDataJson['geojsonBbox'])
+                    this.dataService.setGeojson(
+                        'bbox',
+                        newDataJson['geojsonBbox']
+                    )
                     this.mapService.eventNewBboxPolygon.emit(
                         newDataJson['geojsonBbox']
                     )
-                    this.dataService.setGeojson(newDataJson['geojson'])
+                    this.dataService.setGeojson(
+                        'upstream',
+                        newDataJson['geojson']
+                    )
                     this.mapService.eventMarkerReDraw.emit(
                         newDataJson['geojson']
                     )

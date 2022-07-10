@@ -174,3 +174,5 @@ export interface CountryCode {
 }
 
 export type OsmGoFCStorage = 'upstream' | 'changed' | 'bbox'
+
+export type OsmGoStorageKey = 'geojson' | 'geojsonChanged' | 'geojsonBbox'
