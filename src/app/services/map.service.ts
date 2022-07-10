@@ -545,9 +545,11 @@ export class MapService {
         return marker
     }
 
-    resetDataMap(): void {
-        this.eventNewBboxPolygon.emit(this.dataService.resetGeojsonBbox())
-        this.eventMarkerReDraw.emit(this.dataService.resetGeojsonData())
+    async resetDataMap(): Promise<void> {
+        const bbox = await this.dataService.resetGeojson('bbox')
+        this.eventNewBboxPolygon.emit(bbox)
+        const data = await this.dataService.resetGeojson('upstream')
+        this.eventMarkerReDraw.emit(data)
     }
 
     getMapStyle(): Observable<any> {

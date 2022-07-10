@@ -120,7 +120,7 @@ export class DataService {
     async setGeojson(
         type: OsmGoFCStorage,
         fc: OsmGoFeatureCollection
-    ): Promise<void> {
+    ): Promise<OsmGoFeatureCollection> {
         switch (type) {
             case 'bbox':
                 this.geojsonBbox = fc
@@ -140,17 +140,21 @@ export class DataService {
         }
 
         const storageKey = this.getStorageKey(type)
-        return this.localStorage.set(storageKey, fc)
+        await this.localStorage.set(storageKey, fc)
+        return Promise.resolve(fc)
+    }
+
+    async resetGeojson(type: OsmGoFCStorage): Promise<OsmGoFeatureCollection> {
+        const fc = featureCollection([]) as OsmGoFeatureCollection
+        if (type === 'changed') {
+            this._nextFeatureId = 0
+        }
+        await this.setGeojson(type, fc)
+        return Promise.resolve(fc)
     }
 
     getGeojsonBbox(): OsmGoFeatureCollection {
         return this.geojsonBbox
-    }
-
-    resetGeojsonBbox(): OsmGoFeatureCollection {
-        const fc = featureCollection([]) as OsmGoFeatureCollection
-        this.setGeojson('bbox', fc)
-        return fc
     }
 
     setGeojsonWay(data: OsmGoFeatureCollection): void {
@@ -310,14 +314,5 @@ export class DataService {
         this._geojsonChanged = {}
         await this.localStorage.set('geojsonChanged', this.geojsonChanged)
         this._nextFeatureId = 0
-    }
-
-    resetGeojsonData(): OsmGoFeatureCollection {
-        this._geojson = {}
-        const fc = featureCollection([]) as OsmGoFeatureCollection
-        this.setGeojson('upstream', fc)
-        // this.getMergedGeojsonGeojsonChanged();
-        // return this.getMergedGeojsonGeojsonChanged();
-        return fc
     }
 }

@@ -339,7 +339,7 @@ describe('DataService', () => {
                 })
             })
 
-            it('should be possible to reset data', () => {
+            it('should be possible to reset data', async () => {
                 const featureA = point([0, 0]) as OsmGoFeature
                 const fc = featureCollection([
                     featureA,
@@ -349,7 +349,7 @@ describe('DataService', () => {
 
                 expect(service.getGeojson().features.length).toBe(1)
 
-                service.resetGeojsonData()
+                await service.resetGeojson('upstream')
 
                 expect(service.getGeojson().features.length).toBe(0)
                 expect(storageSpy.set.calls.mostRecent().args).toEqual([
@@ -531,7 +531,7 @@ describe('DataService', () => {
                 expect(actual).toEqual(fc)
             })
 
-            it('should be possible to reset bbox geojson data', () => {
+            it('should be possible to reset bbox geojson data', async () => {
                 const fc = featureCollection([
                     point([0, 0]),
                 ]) as OsmGoFeatureCollection
@@ -539,10 +539,10 @@ describe('DataService', () => {
 
                 expect(service.getGeojsonBbox().features.length).toBe(1)
 
-                const actual = service.resetGeojsonBbox()
+                const actual = await service.resetGeojson('bbox')
 
                 expect(service.getGeojsonBbox().features.length).toBe(0)
-                expect(actual.features.length).toEqual(0)
+                expect(actual.features.length).toBe(0)
             })
         })
     })

@@ -55,8 +55,8 @@ export class MenuPage {
                     },
                     {
                         text: this.translate.instant('SHARED.CONFIRM'),
-                        handler: () => {
-                            this.mapService.resetDataMap()
+                        handler: async () => {
+                            await this.mapService.resetDataMap()
                             this.closeMenu()
                         },
                     },
