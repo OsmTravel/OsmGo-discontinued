@@ -36,9 +36,6 @@ export class DataService {
      */
     _changedFeatures: Record<string, OsmGoFeature> = {}
 
-    geojsonWay: OsmGoFeatureCollection = featureCollection(
-        []
-    ) as OsmGoFeatureCollection
     _bboxFC: OsmGoFeatureCollection = featureCollection(
         []
     ) as OsmGoFeatureCollection
@@ -199,14 +196,6 @@ export class DataService {
                 this.setFC(type, this.upstreamFC)
                 break
         }
-    }
-
-    setGeojsonWay(data: OsmGoFeatureCollection): void {
-        this.geojsonWay = cloneDeep(data)
-    }
-
-    addFeatureToGeojsonWay(feature: OsmGoFeature) {
-        this.geojsonWay.features.push(feature)
     }
 
     /**
