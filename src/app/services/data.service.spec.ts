@@ -44,35 +44,6 @@ describe('DataService', () => {
         localStorage.clear = _clear
     })
 
-    it('should be possible to copy data from changed model to original', async () => {
-        const originalFeature = point([0, 0], {}, { id: 3 }) as OsmGoFeature
-        const originalFc = featureCollection([
-            originalFeature,
-        ]) as OsmGoFeatureCollection
-
-        const changedFeature = point(
-            [0, 0],
-            {
-                hexColor: '#ccc',
-            },
-            { id: 3 }
-        ) as OsmGoFeature
-        const changedFc = featureCollection([
-            changedFeature,
-        ]) as OsmGoFeatureCollection
-
-        await service.setGeojson('upstream', originalFc)
-        await service.setGeojson('changed', changedFc)
-
-        const actual = service.getMergedGeojsonGeojsonChanged()
-
-        expect(originalFc.features.length).toBe(1)
-        expect(changedFc.features.length).toBe(1)
-
-        expect(actual.features[0]).toEqual(changedFeature)
-        expect(service.getGeojson().features[0]).toEqual(changedFeature)
-    })
-
     describe('id generation/handling', () => {
         it('should be possible to get next free id', async () => {
             const feature = point([0, 0], { id: -10 }) as OsmGoFeature
@@ -392,19 +363,6 @@ describe('DataService', () => {
                 expect(service.getGeojsonChanged().features.length).toBe(1)
             })
 
-            it('should be able to determine the number of changed features', async () => {
-                expect(service.getCountGeojsonChanged()).toBe(0)
-
-                const newFeature = point([1, 2]) as OsmGoFeature
-                const fc = featureCollection([
-                    newFeature,
-                ]) as OsmGoFeatureCollection
-
-                await service.setGeojson('changed', fc)
-
-                expect(service.getCountGeojsonChanged()).toBe(1)
-            })
-
             describe('modify/delete feature', () => {
                 let featureA: OsmGoFeature
                 let featureB: OsmGoFeature
@@ -471,7 +429,7 @@ describe('DataService', () => {
 
                 expect(service.getGeojsonChanged().features.length).toBe(1)
 
-                await service.resetGeojsonChanged()
+                await service.resetGeojson('changed')
 
                 expect(service.getGeojsonChanged().features.length).toBe(0)
                 expect(storageSpy.set.calls.mostRecent().args).toEqual([

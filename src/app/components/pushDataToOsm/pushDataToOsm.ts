@@ -388,7 +388,7 @@ export class PushDataToOsmPage implements AfterViewInit, OnInit, OnDestroy {
         for (let feature of featuresChanged) {
             this.dataService.cancelFeatureChange(feature)
         }
-        await this.dataService.resetGeojsonChanged()
+        await this.dataService.resetGeojson('changed')
         this.summary = this.getSummary()
         this.featuresChanges = this.dataService.getGeojsonChanged().features
         timer(100)

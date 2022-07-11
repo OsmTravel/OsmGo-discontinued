@@ -292,28 +292,6 @@ export class DataService {
         await this.setGeojson('changed', this.getGeojsonChanged())
     }
 
-    getCountGeojsonChanged(): number {
-        if (this.getGeojsonChanged().features) {
-            return this.getGeojsonChanged().features.length
-        } else {
-            return 0
-        }
-    }
-
-    getMergedGeojsonGeojsonChanged(): OsmGoFeatureCollection {
-        // stock les id dans un array
-        const changedIds = Object.keys(this._geojsonChanged)
-        // DELETE from GEOJSON
-        for (const id of changedIds) {
-            delete this._geojson[id]
-        }
-        // ADD to geojson
-        for (const feature of Object.values(this._geojsonChanged)) {
-            this._geojson[feature.id] = feature
-        }
-        return cloneDeep(this.geojson)
-    }
-
     cancelFeatureChange(feature: OsmGoFeature): void {
         const originalFeature = cloneDeep(feature.properties.originalData)
         this.deleteFeature('changed', feature)
@@ -321,12 +299,5 @@ export class DataService {
         if (feature.properties.changeType !== 'Create') {
             this.addOrUpdateFeature('upstream', originalFeature)
         }
-    }
-
-    // supprime l'intégralité des changements
-    async resetGeojsonChanged(): Promise<void> {
-        this._geojsonChanged = {}
-        await this.localStorage.set('geojsonChanged', this.geojsonChanged)
-        this._nextFeatureId = 0
     }
 }
