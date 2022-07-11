@@ -716,8 +716,8 @@ export class OsmApiService {
                 switchMap((osmData) =>
                     this.formatOsmJsonData$(
                         osmData,
-                        this.dataService.getGeojson(),
-                        this.dataService.getGeojsonChanged(),
+                        this.dataService.geojson,
+                        this.dataService.geojsonChanged,
                         limitFeatures
                     )
                 ),

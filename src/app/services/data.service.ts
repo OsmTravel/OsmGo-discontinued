@@ -209,14 +209,6 @@ export class DataService {
         this.geojsonWay.features.push(feature)
     }
 
-    getGeojson(): OsmGoFeatureCollection {
-        if (this.geojson) {
-            return this.geojson
-        } else {
-            return featureCollection([]) as OsmGoFeatureCollection
-        }
-    }
-
     /**
      * Looks up a feature with a given ID.
      *
@@ -228,8 +220,8 @@ export class DataService {
     getFeatureById(id: number, source: FeatureIdSource): OsmGoFeature | null {
         const features =
             source === 'data_changed'
-                ? this.getGeojsonChanged().features
-                : this.getGeojson().features
+                ? this.geojsonChanged.features
+                : this.geojson.features
 
         for (let i = 0; i < features.length; i++) {
             if (features[i].properties.id === id) {
@@ -238,17 +230,6 @@ export class DataService {
         }
 
         return null
-    }
-
-    /**
-     * Retrieve a geojson feature collection of all changed
-     * (created/modified/deleted) elements.
-     *
-     * @returns A deep copy of the geojson feature collection of all changed
-     * elements.
-     */
-    getGeojsonChanged(): OsmGoFeatureCollection {
-        return cloneDeep(this.geojsonChanged)
     }
 
     /** Returns the next available identifier for a feature (auto-incremented). */
@@ -289,7 +270,7 @@ export class DataService {
                 delete this._geojsonChanged[id]
             }
         }
-        await this.setGeojson('changed', this.getGeojsonChanged())
+        await this.setGeojson('changed', this.geojsonChanged)
     }
 
     cancelFeatureChange(feature: OsmGoFeature): void {

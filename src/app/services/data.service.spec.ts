@@ -85,7 +85,7 @@ describe('DataService', () => {
 
             await service.replaceIdGenerateByOldVersion()
 
-            const actual = service.getGeojsonChanged().features
+            const actual = service.geojsonChanged.features
             expect(actual[0].properties.id).toBe(0)
             expect(actual[0].id).toBe('foo/0')
 
@@ -114,11 +114,11 @@ describe('DataService', () => {
             service.cancelFeatureChange(changedFeature)
 
             // Copy of original feature in `originalData` property should have been re-created in the original data
-            // expect(service.getGeojson().features[0]).toEqual(originalFeature)
+            // expect(service.geojson.features[0]).toEqual(originalFeature)
             // Feature must be deleted in the changed feature collection ...
-            expect(service.getGeojsonChanged().features.length).toBe(0)
+            expect(service.geojsonChanged.features.length).toBe(0)
             // ... and it should not appear in the original dataset
-            expect(service.getGeojson().features.length).toBe(0)
+            expect(service.geojson.features.length).toBe(0)
         })
 
         it('cancel updated feature', async () => {
@@ -140,11 +140,11 @@ describe('DataService', () => {
             service.cancelFeatureChange(changedFeature)
 
             // Feature must be deleted in the changed feature collection ...
-            expect(service.getGeojsonChanged().features.length).toBe(0)
+            expect(service.geojsonChanged.features.length).toBe(0)
 
             // ...and a copy of the original feature in `originalData` property
             // should have been re-created in the original data
-            expect(service.getGeojson().features[0]).toEqual(originalFeature)
+            expect(service.geojson.features[0]).toEqual(originalFeature)
         })
     })
 
@@ -247,12 +247,12 @@ describe('DataService', () => {
             })
 
             it('should be possible to add a feature to geojson collection', () => {
-                expect(service.getGeojson().features.length).toBe(0)
+                expect(service.geojson.features.length).toBe(0)
 
                 const newFeature = point([1, 2]) as OsmGoFeature
                 service.addOrUpdateFeature('upstream', newFeature)
 
-                expect(service.getGeojson().features.length).toBe(1)
+                expect(service.geojson.features.length).toBe(1)
             })
 
             describe('modify/delete feature', () => {
@@ -271,7 +271,7 @@ describe('DataService', () => {
 
                     service.setGeojson('upstream', fc)
 
-                    expect(service.getGeojson().features.length).toBe(2)
+                    expect(service.geojson.features.length).toBe(2)
                 })
 
                 it('should update a feature based on its id', () => {
@@ -285,11 +285,9 @@ describe('DataService', () => {
 
                     // Test if collection has been updated correctly
                     expect(
-                        service
-                            .getGeojson()
-                            .features.find(
-                                (feature) => feature.id === featureA.id
-                            )
+                        service.geojson.features.find(
+                            (feature) => feature.id === featureA.id
+                        )
                     ).toEqual(newFeature)
                 })
 
@@ -301,11 +299,9 @@ describe('DataService', () => {
                     service.deleteFeature('upstream', deletionFeature)
 
                     expect(
-                        service
-                            .getGeojson()
-                            .features.find(
-                                (feature) => feature.id === featureA.id
-                            )
+                        service.geojson.features.find(
+                            (feature) => feature.id === featureA.id
+                        )
                     ).toBeUndefined()
                 })
             })
@@ -318,11 +314,11 @@ describe('DataService', () => {
 
                 service.setGeojson('upstream', fc)
 
-                expect(service.getGeojson().features.length).toBe(1)
+                expect(service.geojson.features.length).toBe(1)
 
                 await service.resetGeojson('upstream')
 
-                expect(service.getGeojson().features.length).toBe(0)
+                expect(service.geojson.features.length).toBe(0)
                 expect(storageSpy.set.calls.mostRecent().args).toEqual([
                     'geojson',
                     featureCollection([]),
@@ -355,12 +351,12 @@ describe('DataService', () => {
             })
 
             it('should be possible to add a feature to changed geojson collection', () => {
-                expect(service.getGeojsonChanged().features.length).toBe(0)
+                expect(service.geojsonChanged.features.length).toBe(0)
 
                 const newFeature = point([1, 2]) as OsmGoFeature
                 service.addOrUpdateFeature('changed', newFeature)
 
-                expect(service.getGeojsonChanged().features.length).toBe(1)
+                expect(service.geojsonChanged.features.length).toBe(1)
             })
 
             describe('modify/delete feature', () => {
@@ -380,7 +376,7 @@ describe('DataService', () => {
 
                     await service.setGeojson('changed', fc)
 
-                    expect(service.getGeojsonChanged().features.length).toBe(2)
+                    expect(service.geojsonChanged.features.length).toBe(2)
                 })
 
                 it('should update a feature based on its id', () => {
@@ -394,11 +390,9 @@ describe('DataService', () => {
 
                     // Test if collection has been updated correctly
                     expect(
-                        service
-                            .getGeojsonChanged()
-                            .features.find(
-                                (feature) => feature.id === featureA.id
-                            )
+                        service.geojsonChanged.features.find(
+                            (feature) => feature.id === featureA.id
+                        )
                     ).toEqual(newFeature)
                 })
 
@@ -410,11 +404,9 @@ describe('DataService', () => {
                     service.deleteFeature('changed', deletionFeature)
 
                     expect(
-                        service
-                            .getGeojsonChanged()
-                            .features.find(
-                                (feature) => feature.id === featureA.id
-                            )
+                        service.geojsonChanged.features.find(
+                            (feature) => feature.id === featureA.id
+                        )
                     ).toBeUndefined()
                 })
             })
@@ -427,11 +419,11 @@ describe('DataService', () => {
 
                 await service.setGeojson('changed', fc)
 
-                expect(service.getGeojsonChanged().features.length).toBe(1)
+                expect(service.geojsonChanged.features.length).toBe(1)
 
                 await service.resetGeojson('changed')
 
-                expect(service.getGeojsonChanged().features.length).toBe(0)
+                expect(service.geojsonChanged.features.length).toBe(0)
                 expect(storageSpy.set.calls.mostRecent().args).toEqual([
                     'geojsonChanged',
                     featureCollection([]),

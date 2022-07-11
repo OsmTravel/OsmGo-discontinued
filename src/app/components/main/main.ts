@@ -128,10 +128,10 @@ export class MainPage implements AfterViewInit {
                     if (data.redraw) {
                         timer(50).subscribe((t) => {
                             this.mapService.eventMarkerReDraw.emit(
-                                this.dataService.getGeojson()
+                                this.dataService.geojson
                             )
                             this.mapService.eventMarkerChangedReDraw.emit(
-                                this.dataService.getGeojsonChanged()
+                                this.dataService.geojsonChanged
                             )
                         })
                     }
@@ -288,7 +288,7 @@ export class MainPage implements AfterViewInit {
         this.mapService.eventMapIsLoaded.subscribe(() => {
             this.loading = false
             timer(2000).subscribe(() => {
-                const nbData = this.dataService.getGeojson().features.length
+                const nbData = this.dataService.geojson.features.length
                 if (nbData > 0) {
                     // Il y a des données stockées en mémoires...
                     this.alertService.eventNewAlert.emit(
