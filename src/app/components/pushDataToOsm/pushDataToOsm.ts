@@ -157,20 +157,14 @@ export class PushDataToOsmPage implements AfterViewInit, OnInit, OnDestroy {
 
             if (diff.typeChange == 'Create') {
                 newFeature = this.mapService.getIconStyle(newFeature) // style
-                this.dataService.deleteFeatureFromGeojsonChanged(
-                    currentFeatureChanged
-                )
-                this.dataService.addFeatureToGeojson(newFeature)
+                this.dataService.deleteFeature('changed', currentFeatureChanged)
+                this.dataService.addOrUpdateFeature('upstream', newFeature)
             } else if (diff.typeChange == 'Update') {
                 newFeature = this.mapService.getIconStyle(newFeature) // style
-                this.dataService.deleteFeatureFromGeojsonChanged(
-                    currentFeatureChanged
-                )
-                this.dataService.addFeatureToGeojson(newFeature)
+                this.dataService.deleteFeature('changed', currentFeatureChanged)
+                this.dataService.addOrUpdateFeature('upstream', newFeature)
             } else if (diff.typeChange == 'Delete') {
-                this.dataService.deleteFeatureFromGeojsonChanged(
-                    currentFeatureChanged
-                )
+                this.dataService.deleteFeature('changed', currentFeatureChanged)
             }
         }
     }

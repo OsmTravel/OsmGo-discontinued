@@ -571,7 +571,8 @@ export class OsmApiService {
         feature.properties.originalData = null
         addAttributesToFeature(feature)
         return from(
-            this.dataService.addFeatureToGeojsonChanged(
+            this.dataService.addOrUpdateFeature(
+                'changed',
                 this.mapService.getIconStyle(feature)
             )
         )
@@ -584,7 +585,8 @@ export class OsmApiService {
         if (origineData === 'data_changed') {
             // il a déjà été modifié == if (feature.properties.changeType)
             return from(
-                this.dataService.updateFeatureToGeojsonChanged(
+                this.dataService.addOrUpdateFeature(
+                    'changed',
                     this.mapService.getIconStyle(feature)
                 )
             )
@@ -595,9 +597,10 @@ export class OsmApiService {
                 feature.properties.id,
                 'data'
             )
-            this.dataService.deleteFeatureFromGeojson(feature)
+            this.dataService.deleteFeature('upstream', feature)
             return from(
-                this.dataService.addFeatureToGeojsonChanged(
+                this.dataService.addOrUpdateFeature(
+                    'changed',
                     this.mapService.getIconStyle(feature)
                 )
             )
@@ -613,15 +616,17 @@ export class OsmApiService {
             // il a déjà été modifié
             if (feature.properties.changeType === 'Create') {
                 // il n'est pas sur le serveur, on le supprime des 2 geojson
-                this.dataService.deleteFeatureFromGeojsonChanged(feature)
+                this.dataService.deleteFeature('changed', feature)
             } else if (feature.properties.changeType === 'Update') {
                 // on reprend les données originales
-                this.dataService.updateFeatureToGeojson(
+                this.dataService.addOrUpdateFeature(
+                    'upstream',
                     feature.properties.originalData
                 )
                 feature.properties.changeType = 'Delete'
                 return from(
-                    this.dataService.updateFeatureToGeojsonChanged(
+                    this.dataService.addOrUpdateFeature(
+                        'changed',
                         this.mapService.getIconStyle(feature)
                     )
                 )
@@ -633,9 +638,10 @@ export class OsmApiService {
                 feature.properties.id,
                 'data'
             )
-            this.dataService.deleteFeatureFromGeojson(feature)
+            this.dataService.deleteFeature('upstream', feature)
             return from(
-                this.dataService.addFeatureToGeojsonChanged(
+                this.dataService.addOrUpdateFeature(
+                    'changed',
                     this.mapService.getIconStyle(feature)
                 )
             )

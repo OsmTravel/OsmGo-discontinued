@@ -279,7 +279,7 @@ describe('DataService', () => {
                 expect(service.getGeojson().features.length).toBe(0)
 
                 const newFeature = point([1, 2]) as OsmGoFeature
-                service.addFeatureToGeojson(newFeature)
+                service.addOrUpdateFeature('upstream', newFeature)
 
                 expect(service.getGeojson().features.length).toBe(1)
             })
@@ -310,7 +310,7 @@ describe('DataService', () => {
                     newFeature.properties.hexColor = '#ccc'
 
                     // Apply feature update
-                    service.updateFeatureToGeojson(newFeature)
+                    service.addOrUpdateFeature('upstream', newFeature)
 
                     // Test if collection has been updated correctly
                     expect(
@@ -327,7 +327,7 @@ describe('DataService', () => {
                     const deletionFeature = point([1, 2]) as OsmGoFeature
                     deletionFeature.id = featureA.id
 
-                    service.deleteFeatureFromGeojson(deletionFeature)
+                    service.deleteFeature('upstream', deletionFeature)
 
                     expect(
                         service
@@ -387,7 +387,7 @@ describe('DataService', () => {
                 expect(service.getGeojsonChanged().features.length).toBe(0)
 
                 const newFeature = point([1, 2]) as OsmGoFeature
-                service.addFeatureToGeojsonChanged(newFeature)
+                service.addOrUpdateFeature('changed', newFeature)
 
                 expect(service.getGeojsonChanged().features.length).toBe(1)
             })
@@ -432,7 +432,7 @@ describe('DataService', () => {
                     newFeature.properties.hexColor = '#ccc'
 
                     // Apply feature update
-                    service.updateFeatureToGeojsonChanged(newFeature)
+                    service.addOrUpdateFeature('changed', newFeature)
 
                     // Test if collection has been updated correctly
                     expect(
@@ -449,7 +449,7 @@ describe('DataService', () => {
                     const deletionFeature = point([1, 2]) as OsmGoFeature
                     deletionFeature.id = featureA.id
 
-                    service.deleteFeatureFromGeojsonChanged(deletionFeature)
+                    service.deleteFeature('changed', deletionFeature)
 
                     expect(
                         service
