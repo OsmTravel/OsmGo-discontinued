@@ -128,10 +128,10 @@ export class MainPage implements AfterViewInit {
                     if (data.redraw) {
                         timer(50).subscribe((t) => {
                             this.mapService.eventMarkerReDraw.emit(
-                                this.dataService.geojson
+                                this.dataService.upstreamFC
                             )
                             this.mapService.eventMarkerChangedReDraw.emit(
-                                this.dataService.geojsonChanged
+                                this.dataService.changedFC
                             )
                         })
                     }
@@ -207,17 +207,11 @@ export class MainPage implements AfterViewInit {
             .subscribe({
                 next: (newDataJson) => {
                     // data = geojson a partir du serveur osm
-                    this.dataService.setGeojson(
-                        'bbox',
-                        newDataJson['geojsonBbox']
-                    )
+                    this.dataService.setFC('bbox', newDataJson['geojsonBbox'])
                     this.mapService.eventNewBboxPolygon.emit(
                         newDataJson['geojsonBbox']
                     )
-                    this.dataService.setGeojson(
-                        'upstream',
-                        newDataJson['geojson']
-                    )
+                    this.dataService.setFC('upstream', newDataJson['geojson'])
                     this.mapService.eventMarkerReDraw.emit(
                         newDataJson['geojson']
                     )
@@ -288,7 +282,7 @@ export class MainPage implements AfterViewInit {
         this.mapService.eventMapIsLoaded.subscribe(() => {
             this.loading = false
             timer(2000).subscribe(() => {
-                const nbData = this.dataService.geojson.features.length
+                const nbData = this.dataService.upstreamFC.features.length
                 if (nbData > 0) {
                     // Il y a des données stockées en mémoires...
                     this.alertService.eventNewAlert.emit(

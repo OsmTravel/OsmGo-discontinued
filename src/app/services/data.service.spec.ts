@@ -48,7 +48,7 @@ describe('DataService', () => {
         it('should be possible to get next free id', async () => {
             const feature = point([0, 0], { id: -10 }) as OsmGoFeature
             const fc = featureCollection([feature]) as OsmGoFeatureCollection
-            await service.setGeojson('changed', fc)
+            await service.setFC('changed', fc)
             ;(service as any).forceNextFeatureIdSync() // ids have been set manually -> force refresh
 
             let actual = service.nextFeatureId
@@ -80,12 +80,12 @@ describe('DataService', () => {
                 featureA,
                 featureB,
             ]) as OsmGoFeatureCollection
-            await service.setGeojson('changed', fc)
+            await service.setFC('changed', fc)
             ;(service as any).forceNextFeatureIdSync() // ids have been set manually -> force refresh
 
             await service.replaceIdGenerateByOldVersion()
 
-            const actual = service.geojsonChanged.features
+            const actual = service.changedFC.features
             expect(actual[0].properties.id).toBe(0)
             expect(actual[0].id).toBe('foo/0')
 
@@ -109,16 +109,16 @@ describe('DataService', () => {
                 changedFeature,
             ]) as OsmGoFeatureCollection
 
-            await service.setGeojson('changed', changedFc)
+            await service.setFC('changed', changedFc)
 
             service.cancelFeatureChange(changedFeature)
 
             // Copy of original feature in `originalData` property should have been re-created in the original data
             // expect(service.geojson.features[0]).toEqual(originalFeature)
             // Feature must be deleted in the changed feature collection ...
-            expect(service.geojsonChanged.features.length).toBe(0)
+            expect(service.changedFC.features.length).toBe(0)
             // ... and it should not appear in the original dataset
-            expect(service.geojson.features.length).toBe(0)
+            expect(service.upstreamFC.features.length).toBe(0)
         })
 
         it('cancel updated feature', async () => {
@@ -135,16 +135,16 @@ describe('DataService', () => {
                 changedFeature,
             ]) as OsmGoFeatureCollection
 
-            await service.setGeojson('changed', changedFc)
+            await service.setFC('changed', changedFc)
 
             service.cancelFeatureChange(changedFeature)
 
             // Feature must be deleted in the changed feature collection ...
-            expect(service.geojsonChanged.features.length).toBe(0)
+            expect(service.changedFC.features.length).toBe(0)
 
             // ...and a copy of the original feature in `originalData` property
             // should have been re-created in the original data
-            expect(service.geojson.features[0]).toEqual(originalFeature)
+            expect(service.upstreamFC.features[0]).toEqual(originalFeature)
         })
     })
 
@@ -161,7 +161,7 @@ describe('DataService', () => {
                 featureA,
                 featureB,
             ]) as OsmGoFeatureCollection
-            service.setGeojson('upstream', fc)
+            service.setFC('upstream', fc)
 
             // test
             const actual = service.getFeatureById(2, 'data')
@@ -181,7 +181,7 @@ describe('DataService', () => {
                 featureA,
                 featureB,
             ]) as OsmGoFeatureCollection
-            await service.setGeojson('changed', fc)
+            await service.setFC('changed', fc)
 
             // test
             const actual = service.getFeatureById(2, 'data_changed')
@@ -192,7 +192,7 @@ describe('DataService', () => {
         it('should return null if no feature could be found', () => {
             // Preparation
             const fc = featureCollection([]) as OsmGoFeatureCollection
-            service.setGeojson('upstream', fc)
+            service.setFC('upstream', fc)
 
             // test
             const actual = service.getFeatureById(2, 'data')
@@ -206,7 +206,7 @@ describe('DataService', () => {
             it('should be possible to read geojson data', async () => {
                 const sample = featureCollection([point([0, 0])])
                 storageSpy.get.and.returnValue(Promise.resolve(sample))
-                const obs = service.loadGeojson$('upstream')
+                const obs = service.loadFC$('upstream')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojson',
@@ -217,7 +217,7 @@ describe('DataService', () => {
 
             it('should return empty feature collection if no data is stored', async () => {
                 storageSpy.get.and.returnValue(Promise.resolve(undefined))
-                const obs = service.loadGeojson$('upstream')
+                const obs = service.loadFC$('upstream')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojson',
@@ -231,9 +231,9 @@ describe('DataService', () => {
                     point([0, 0]),
                 ]) as OsmGoFeatureCollection
 
-                service.setGeojson('upstream', fc)
+                service.setFC('upstream', fc)
 
-                expect(service.geojson).toEqual(fc)
+                expect(service.upstreamFC).toEqual(fc)
                 expect(storageSpy.set.calls.count()).toBe(1)
                 expect(storageSpy.set.calls.mostRecent().args).toEqual([
                     'geojson',
@@ -243,16 +243,16 @@ describe('DataService', () => {
                 // test if object has been deeply cloned
                 fc.features[0].properties.id = 123
 
-                expect(service.geojson).not.toEqual(fc)
+                expect(service.upstreamFC).not.toEqual(fc)
             })
 
             it('should be possible to add a feature to geojson collection', () => {
-                expect(service.geojson.features.length).toBe(0)
+                expect(service.upstreamFC.features.length).toBe(0)
 
                 const newFeature = point([1, 2]) as OsmGoFeature
                 service.addOrUpdateFeature('upstream', newFeature)
 
-                expect(service.geojson.features.length).toBe(1)
+                expect(service.upstreamFC.features.length).toBe(1)
             })
 
             describe('modify/delete feature', () => {
@@ -269,9 +269,9 @@ describe('DataService', () => {
                         featureB,
                     ]) as OsmGoFeatureCollection
 
-                    service.setGeojson('upstream', fc)
+                    service.setFC('upstream', fc)
 
-                    expect(service.geojson.features.length).toBe(2)
+                    expect(service.upstreamFC.features.length).toBe(2)
                 })
 
                 it('should update a feature based on its id', () => {
@@ -285,7 +285,7 @@ describe('DataService', () => {
 
                     // Test if collection has been updated correctly
                     expect(
-                        service.geojson.features.find(
+                        service.upstreamFC.features.find(
                             (feature) => feature.id === featureA.id
                         )
                     ).toEqual(newFeature)
@@ -299,7 +299,7 @@ describe('DataService', () => {
                     service.deleteFeature('upstream', deletionFeature)
 
                     expect(
-                        service.geojson.features.find(
+                        service.upstreamFC.features.find(
                             (feature) => feature.id === featureA.id
                         )
                     ).toBeUndefined()
@@ -312,13 +312,13 @@ describe('DataService', () => {
                     featureA,
                 ]) as OsmGoFeatureCollection
 
-                service.setGeojson('upstream', fc)
+                service.setFC('upstream', fc)
 
-                expect(service.geojson.features.length).toBe(1)
+                expect(service.upstreamFC.features.length).toBe(1)
 
-                await service.resetGeojson('upstream')
+                await service.clear('upstream')
 
-                expect(service.geojson.features.length).toBe(0)
+                expect(service.upstreamFC.features.length).toBe(0)
                 expect(storageSpy.set.calls.mostRecent().args).toEqual([
                     'geojson',
                     featureCollection([]),
@@ -330,7 +330,7 @@ describe('DataService', () => {
             it('should be possible to read changed geojson data', async () => {
                 const sample = featureCollection([point([0, 0])])
                 storageSpy.get.and.returnValue(Promise.resolve(sample))
-                const obs = service.loadGeojson$('changed')
+                const obs = service.loadFC$('changed')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojsonChanged',
@@ -341,7 +341,7 @@ describe('DataService', () => {
 
             it('should return empty feature collection if no data is stored', async () => {
                 storageSpy.get.and.returnValue(Promise.resolve(undefined))
-                const obs = service.loadGeojson$('changed')
+                const obs = service.loadFC$('changed')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojsonChanged',
@@ -351,12 +351,12 @@ describe('DataService', () => {
             })
 
             it('should be possible to add a feature to changed geojson collection', () => {
-                expect(service.geojsonChanged.features.length).toBe(0)
+                expect(service.changedFC.features.length).toBe(0)
 
                 const newFeature = point([1, 2]) as OsmGoFeature
                 service.addOrUpdateFeature('changed', newFeature)
 
-                expect(service.geojsonChanged.features.length).toBe(1)
+                expect(service.changedFC.features.length).toBe(1)
             })
 
             describe('modify/delete feature', () => {
@@ -374,9 +374,9 @@ describe('DataService', () => {
                         featureB,
                     ]) as OsmGoFeatureCollection
 
-                    await service.setGeojson('changed', fc)
+                    await service.setFC('changed', fc)
 
-                    expect(service.geojsonChanged.features.length).toBe(2)
+                    expect(service.changedFC.features.length).toBe(2)
                 })
 
                 it('should update a feature based on its id', () => {
@@ -390,7 +390,7 @@ describe('DataService', () => {
 
                     // Test if collection has been updated correctly
                     expect(
-                        service.geojsonChanged.features.find(
+                        service.changedFC.features.find(
                             (feature) => feature.id === featureA.id
                         )
                     ).toEqual(newFeature)
@@ -404,7 +404,7 @@ describe('DataService', () => {
                     service.deleteFeature('changed', deletionFeature)
 
                     expect(
-                        service.geojsonChanged.features.find(
+                        service.changedFC.features.find(
                             (feature) => feature.id === featureA.id
                         )
                     ).toBeUndefined()
@@ -417,13 +417,13 @@ describe('DataService', () => {
                     featureA,
                 ]) as OsmGoFeatureCollection
 
-                await service.setGeojson('changed', fc)
+                await service.setFC('changed', fc)
 
-                expect(service.geojsonChanged.features.length).toBe(1)
+                expect(service.changedFC.features.length).toBe(1)
 
-                await service.resetGeojson('changed')
+                await service.clear('changed')
 
-                expect(service.geojsonChanged.features.length).toBe(0)
+                expect(service.changedFC.features.length).toBe(0)
                 expect(storageSpy.set.calls.mostRecent().args).toEqual([
                     'geojsonChanged',
                     featureCollection([]),
@@ -435,7 +435,7 @@ describe('DataService', () => {
             it('should be possible to read bbox geojson data', async () => {
                 const sample = featureCollection([point([0, 0])])
                 storageSpy.get.and.returnValue(Promise.resolve(sample))
-                const obs = service.loadGeojson$('bbox')
+                const obs = service.loadFC$('bbox')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojsonBbox',
@@ -446,7 +446,7 @@ describe('DataService', () => {
 
             it('should return empty feature collection if no data is stored', async () => {
                 storageSpy.get.and.returnValue(Promise.resolve(undefined))
-                const obs = service.loadGeojson$('bbox')
+                const obs = service.loadFC$('bbox')
                 const actual = await obs.toPromise()
                 expect(storageSpy.get.calls.mostRecent().args).toEqual([
                     'geojsonBbox',
@@ -459,9 +459,9 @@ describe('DataService', () => {
                 const fc = featureCollection([
                     point([0, 0]),
                 ]) as OsmGoFeatureCollection
-                service.setGeojson('bbox', fc)
+                service.setFC('bbox', fc)
 
-                expect(service.geojsonBbox).toEqual(fc)
+                expect(service._bboxFC).toEqual(fc)
                 // ensure that data is persisted in storage
                 expect(storageSpy.set.calls.count()).toBe(1)
                 expect(storageSpy.set.calls.mostRecent().args).toEqual([
@@ -474,9 +474,9 @@ describe('DataService', () => {
                 const fc = featureCollection([
                     point([0, 0]),
                 ]) as OsmGoFeatureCollection
-                service.geojsonBbox = fc
+                service._bboxFC = fc
 
-                const actual = service.getGeojsonBbox()
+                const actual = service.bboxFC
 
                 expect(actual).toEqual(fc)
             })
@@ -485,13 +485,13 @@ describe('DataService', () => {
                 const fc = featureCollection([
                     point([0, 0]),
                 ]) as OsmGoFeatureCollection
-                service.setGeojson('bbox', fc)
+                service.setFC('bbox', fc)
 
-                expect(service.getGeojsonBbox().features.length).toBe(1)
+                expect(service.bboxFC.features.length).toBe(1)
 
-                const actual = await service.resetGeojson('bbox')
+                const actual = await service.clear('bbox')
 
-                expect(service.getGeojsonBbox().features.length).toBe(0)
+                expect(service.bboxFC.features.length).toBe(0)
                 expect(actual.features.length).toBe(0)
             })
         })

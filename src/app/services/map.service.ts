@@ -546,9 +546,9 @@ export class MapService {
     }
 
     async resetDataMap(): Promise<void> {
-        const bbox = await this.dataService.resetGeojson('bbox')
+        const bbox = await this.dataService.clear('bbox')
         this.eventNewBboxPolygon.emit(bbox)
-        const data = await this.dataService.resetGeojson('upstream')
+        const data = await this.dataService.clear('upstream')
         this.eventMarkerReDraw.emit(data)
     }
 
@@ -841,9 +841,9 @@ export class MapService {
         })
 
         // this.loadDataFromLocalStorage();
-        this.eventNewBboxPolygon.emit(this.dataService.geojsonBbox)
-        this.eventMarkerChangedReDraw.emit(this.dataService.geojsonChanged)
-        this.eventMarkerReDraw.emit(this.dataService.geojson)
+        this.eventNewBboxPolygon.emit(this.dataService._bboxFC)
+        this.eventMarkerChangedReDraw.emit(this.dataService.changedFC)
+        this.eventMarkerReDraw.emit(this.dataService.upstreamFC)
 
         this.map.addLayer({
             id: 'bboxLayer',

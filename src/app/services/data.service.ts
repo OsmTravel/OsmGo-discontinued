@@ -24,7 +24,7 @@ export class DataService {
      * A hashmap is used to have a constant time complexity when looking up
      * entries with a known ID.
      */
-    _geojson: Record<string, OsmGoFeature> = {}
+    _upstreamFeatures: Record<string, OsmGoFeature> = {}
 
     /**
      * Primary data storage for self-created or modified POIs.
@@ -34,12 +34,12 @@ export class DataService {
      * A hashmap is used to have a constant time complexity when looking up
      * entries with a known ID.
      */
-    _geojsonChanged: Record<string, OsmGoFeature> = {}
+    _changedFeatures: Record<string, OsmGoFeature> = {}
 
     geojsonWay: OsmGoFeatureCollection = featureCollection(
         []
     ) as OsmGoFeatureCollection
-    geojsonBbox: OsmGoFeatureCollection = featureCollection(
+    _bboxFC: OsmGoFeatureCollection = featureCollection(
         []
     ) as OsmGoFeatureCollection
 
@@ -54,9 +54,9 @@ export class DataService {
      *
      * Data source is the `_geojson` member variable.
      */
-    get geojson(): OsmGoFeatureCollection {
+    get upstreamFC(): OsmGoFeatureCollection {
         const fc = featureCollection([]) as OsmGoFeatureCollection
-        fc.features = Object.values(this._geojson)
+        fc.features = Object.values(this._upstreamFeatures)
         return fc
     }
 
@@ -66,13 +66,17 @@ export class DataService {
      *
      * Data source is the `_geojsonChanged` member variable.
      */
-    get geojsonChanged(): OsmGoFeatureCollection {
+    get changedFC(): OsmGoFeatureCollection {
         const fc = featureCollection([]) as OsmGoFeatureCollection
-        fc.features = Object.values(this._geojsonChanged)
+        fc.features = Object.values(this._changedFeatures)
         return fc
     }
 
-    private getStorageKey(type: OsmGoFCStorage): OsmGoStorageKey {
+    get bboxFC(): OsmGoFeatureCollection {
+        return this._bboxFC
+    }
+
+    private storageKeyFromType(type: OsmGoFCStorage): OsmGoStorageKey {
         switch (type) {
             case 'upstream':
                 return 'geojson'
@@ -83,15 +87,15 @@ export class DataService {
         }
     }
 
-    loadGeojson$(type: OsmGoFCStorage): Observable<OsmGoFeatureCollection> {
-        const storageKey = this.getStorageKey(type)
+    loadFC$(type: OsmGoFCStorage): Observable<OsmGoFeatureCollection> {
+        const storageKey = this.storageKeyFromType(type)
         return from(this.localStorage.get(storageKey)).pipe(
             map((geojson: OsmGoFeatureCollection) => {
                 geojson = geojson
                     ? geojson
                     : (featureCollection([]) as OsmGoFeatureCollection)
                 for (const feature of geojson.features) {
-                    this._geojson[feature.id] = feature
+                    this._upstreamFeatures[feature.id] = feature
                 }
                 if (type === 'changed') {
                     // At this point we know previously created elements from which we can determine the min ID.
@@ -117,39 +121,39 @@ export class DataService {
         localStorage.clear()
     }
 
-    async setGeojson(
+    async setFC(
         type: OsmGoFCStorage,
         fc: OsmGoFeatureCollection
     ): Promise<OsmGoFeatureCollection> {
         switch (type) {
             case 'bbox':
-                this.geojsonBbox = fc
+                this._bboxFC = fc
                 break
             case 'changed':
-                this._geojsonChanged = {}
+                this._changedFeatures = {}
                 for (const feature of fc.features) {
-                    this._geojsonChanged[feature.id] = cloneDeep(feature)
+                    this._changedFeatures[feature.id] = cloneDeep(feature)
                 }
                 break
             case 'upstream':
-                this._geojson = {}
+                this._upstreamFeatures = {}
                 for (const feature of fc.features) {
-                    this._geojson[feature.id] = cloneDeep(feature)
+                    this._upstreamFeatures[feature.id] = cloneDeep(feature)
                 }
                 break
         }
 
-        const storageKey = this.getStorageKey(type)
+        const storageKey = this.storageKeyFromType(type)
         await this.localStorage.set(storageKey, fc)
         return Promise.resolve(fc)
     }
 
-    async resetGeojson(type: OsmGoFCStorage): Promise<OsmGoFeatureCollection> {
+    async clear(type: OsmGoFCStorage): Promise<OsmGoFeatureCollection> {
         const fc = featureCollection([]) as OsmGoFeatureCollection
         if (type === 'changed') {
             this._nextFeatureId = 0
         }
-        await this.setGeojson(type, fc)
+        await this.setFC(type, fc)
         return Promise.resolve(fc)
     }
 
@@ -159,46 +163,42 @@ export class DataService {
     ): Promise<any> {
         switch (type) {
             case 'bbox':
-                const index = this.geojsonBbox.features.findIndex(
+                const index = this._bboxFC.features.findIndex(
                     (f) => f.properties.id === feature.properties.id
                 )
                 if (index >= 0) {
-                    this.geojsonBbox.features.splice(index, 1)
+                    this._bboxFC.features.splice(index, 1)
                 }
-                this.geojsonBbox.features.push(feature)
-                return this.setGeojson(type, this.geojsonBbox)
+                this._bboxFC.features.push(feature)
+                return this.setFC(type, this._bboxFC)
             case 'changed':
-                this._geojsonChanged[feature.id] = feature
-                return this.setGeojson(type, this.geojsonChanged)
+                this._changedFeatures[feature.id] = feature
+                return this.setFC(type, this.changedFC)
             case 'upstream':
-                this._geojson[feature.id] = feature
-                return this.setGeojson(type, this.geojson)
+                this._upstreamFeatures[feature.id] = feature
+                return this.setFC(type, this.upstreamFC)
         }
     }
 
     deleteFeature(type: OsmGoFCStorage, feature: OsmGoFeature): void {
         switch (type) {
             case 'bbox':
-                this.geojsonBbox.features.push(feature)
-                const index = this.geojsonBbox.features.findIndex(
+                this._bboxFC.features.push(feature)
+                const index = this._bboxFC.features.findIndex(
                     (f) => f.properties.id === feature.properties.id
                 )
-                this.geojsonBbox.features.splice(index, 1)
-                this.setGeojson(type, this.geojsonBbox)
+                this._bboxFC.features.splice(index, 1)
+                this.setFC(type, this._bboxFC)
                 break
             case 'changed':
-                delete this._geojsonChanged[feature.id]
-                this.setGeojson(type, this.geojsonChanged)
+                delete this._changedFeatures[feature.id]
+                this.setFC(type, this.changedFC)
                 break
             case 'upstream':
-                delete this._geojson[feature.id]
-                this.setGeojson(type, this.geojson)
+                delete this._upstreamFeatures[feature.id]
+                this.setFC(type, this.upstreamFC)
                 break
         }
-    }
-
-    getGeojsonBbox(): OsmGoFeatureCollection {
-        return this.geojsonBbox
     }
 
     setGeojsonWay(data: OsmGoFeatureCollection): void {
@@ -220,8 +220,8 @@ export class DataService {
     getFeatureById(id: number, source: FeatureIdSource): OsmGoFeature | null {
         const features =
             source === 'data_changed'
-                ? this.geojsonChanged.features
-                : this.geojson.features
+                ? this.changedFC.features
+                : this.upstreamFC.features
 
         for (let i = 0; i < features.length; i++) {
             if (features[i].properties.id === id) {
@@ -245,7 +245,7 @@ export class DataService {
      * service.
      */
     private forceNextFeatureIdSync(): void {
-        const ids = Object.values(this._geojsonChanged)
+        const ids = Object.values(this._changedFeatures)
             .map((feature) => feature.properties.id)
             // in the new format only non-positive values are allowed, skip all
             // others
@@ -255,7 +255,7 @@ export class DataService {
 
     // replace id generate by version <= 1.5 (tmp_123) by -1, -2 etc...
     async replaceIdGenerateByOldVersion(): Promise<void> {
-        for (const [id, feature] of Object.entries(this._geojsonChanged)) {
+        for (const [id, feature] of Object.entries(this._changedFeatures)) {
             if (
                 feature.properties.changeType == 'Create' &&
                 (!Number.isInteger(feature.properties.id) ||
@@ -266,11 +266,11 @@ export class DataService {
                 feature.id = `${feature.properties.type}/${nextId}`
                 console.info('FIXE :', feature.id, feature.properties.id)
 
-                this._geojsonChanged[feature.id] = feature
-                delete this._geojsonChanged[id]
+                this._changedFeatures[feature.id] = feature
+                delete this._changedFeatures[id]
             }
         }
-        await this.setGeojson('changed', this.geojsonChanged)
+        await this.setFC('changed', this.changedFC)
     }
 
     cancelFeatureChange(feature: OsmGoFeature): void {

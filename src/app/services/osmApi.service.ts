@@ -665,7 +665,7 @@ export class OsmApiService {
         limitFeatures: number = 10000
     ) {
         const that = this
-        const oldBbox = this.dataService.getGeojsonBbox()
+        const oldBbox = this.dataService.bboxFC
         const oldBboxFeature = cloneDeep(oldBbox.features[0])
 
         return from(
@@ -716,8 +716,8 @@ export class OsmApiService {
                 switchMap((osmData) =>
                     this.formatOsmJsonData$(
                         osmData,
-                        this.dataService.geojson,
-                        this.dataService.geojsonChanged,
+                        this.dataService.upstreamFC,
+                        this.dataService.changedFC,
                         limitFeatures
                     )
                 ),
