@@ -91,8 +91,20 @@ export class DataService {
                 geojson = geojson
                     ? geojson
                     : (featureCollection([]) as OsmGoFeatureCollection)
-                for (const feature of geojson.features) {
-                    this._upstreamFeatures[feature.id] = feature
+                switch (type) {
+                    case 'upstream': // fall-through is intentional
+                    case 'changed':
+                        const dataSource =
+                            type === 'upstream'
+                                ? this._upstreamFeatures
+                                : this._changedFeatures
+                        for (const feature of geojson.features) {
+                            dataSource[feature.id] = feature
+                        }
+                        break
+                    case 'bbox':
+                        this._bboxFC.features = geojson.features
+                        break
                 }
                 if (type === 'changed') {
                     // At this point we know previously created elements from which we can determine the min ID.
