@@ -24,7 +24,7 @@ export class DataService {
      * A hashmap is used to have a constant time complexity when looking up
      * entries with a known ID.
      */
-    _upstreamFeatures: Record<string, OsmGoFeature> = {}
+    private _upstreamFeatures: Record<string, OsmGoFeature> = {}
 
     /**
      * Primary data storage for self-created or modified POIs.
@@ -34,9 +34,9 @@ export class DataService {
      * A hashmap is used to have a constant time complexity when looking up
      * entries with a known ID.
      */
-    _changedFeatures: Record<string, OsmGoFeature> = {}
+    private _changedFeatures: Record<string, OsmGoFeature> = {}
 
-    _bboxFC: OsmGoFeatureCollection = featureCollection(
+    private _bboxFC: OsmGoFeatureCollection = featureCollection(
         []
     ) as OsmGoFeatureCollection
 

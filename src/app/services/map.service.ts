@@ -841,7 +841,7 @@ export class MapService {
         })
 
         // this.loadDataFromLocalStorage();
-        this.eventNewBboxPolygon.emit(this.dataService._bboxFC)
+        this.eventNewBboxPolygon.emit(this.dataService.bboxFC)
         this.eventMarkerChangedReDraw.emit(this.dataService.changedFC)
         this.eventMarkerReDraw.emit(this.dataService.upstreamFC)
 

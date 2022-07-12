@@ -461,7 +461,7 @@ describe('DataService', () => {
                 ]) as OsmGoFeatureCollection
                 service.setFC('bbox', fc)
 
-                expect(service._bboxFC).toEqual(fc)
+                expect(service.bboxFC).toEqual(fc)
                 // ensure that data is persisted in storage
                 expect(storageSpy.set.calls.count()).toBe(1)
                 expect(storageSpy.set.calls.mostRecent().args).toEqual([
@@ -474,7 +474,7 @@ describe('DataService', () => {
                 const fc = featureCollection([
                     point([0, 0]),
                 ]) as OsmGoFeatureCollection
-                service._bboxFC = fc
+                service.setFC('bbox', fc)
 
                 const actual = service.bboxFC
 
