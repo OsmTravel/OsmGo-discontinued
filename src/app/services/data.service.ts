@@ -28,7 +28,7 @@ export class DataService {
 
     /**
      * Primary data storage for self-created or modified POIs.
-     * Don't read from this value directly. Instead use the `geojsonChanged`
+     * Don't read from this value directly. Instead use the `changedFC`
      * member variable.
      *
      * A hashmap is used to have a constant time complexity when looking up

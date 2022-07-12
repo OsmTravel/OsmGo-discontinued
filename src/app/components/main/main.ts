@@ -269,7 +269,7 @@ export class MainPage implements AfterViewInit {
                     bookmarksIds,
                     lastTagsIds,
                     geojson,
-                    geojsonChanged,
+                    changedFC,
                     geojsonBbox,
                 ]) => {
                     this.locationService.enableGeolocation()

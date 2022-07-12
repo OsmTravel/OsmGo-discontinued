@@ -591,7 +591,7 @@ export class OsmApiService {
                 )
             )
         } else {
-            // jamais été modifié, n'exite donc pas dans this.geojsonChanged mais dans le this.geojson
+            // jamais été modifié, n'exite donc pas dans this.changedFC mais dans le this.geojson
             feature.properties.changeType = 'Update'
             feature.properties.originalData = this.dataService.getFeatureById(
                 feature.properties.id,
@@ -632,7 +632,7 @@ export class OsmApiService {
                 )
             }
         } else {
-            // jamais été modifié, n'exite donc pas dans this.geojsonChanged
+            // jamais été modifié, n'exite donc pas dans this.changedFC
             feature.properties.changeType = 'Delete'
             feature.properties.originalData = this.dataService.getFeatureById(
                 feature.properties.id,
