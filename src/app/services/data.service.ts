@@ -18,8 +18,8 @@ export class DataService {
 
     /**
      * Primary data storage for official OSM POIs.
-     * Don't read from this value directly. Instead use the `geojson` member
-     * variable.
+     * Don't read from this value directly. Instead use the
+     * {@link DataService#upstreamFC} feature collection.
      *
      * A hashmap is used to have a constant time complexity when looking up
      * entries with a known ID.
@@ -28,8 +28,8 @@ export class DataService {
 
     /**
      * Primary data storage for self-created or modified POIs.
-     * Don't read from this value directly. Instead use the `changedFC`
-     * member variable.
+     * Don't read from this value directly. Instead use the
+     * {@link DataService#changedFC} feature colleciton.
      *
      * A hashmap is used to have a constant time complexity when looking up
      * entries with a known ID.
@@ -49,7 +49,7 @@ export class DataService {
      * Getter that translates the internal storage representation of OSM POIs
      * into a geojson feature collection.
      *
-     * Data source is the `_geojson` member variable.
+     * Data source is the {@link DataService#_upstreamFeatures} member variable.
      */
     get upstreamFC(): OsmGoFeatureCollection {
         const fc = featureCollection([]) as OsmGoFeatureCollection
@@ -61,7 +61,7 @@ export class DataService {
      * Getter that translates the internal storage representation of
      * self-created or modified POIs into a geojson feature collection.
      *
-     * Data source is the `_geojsonChanged` member variable.
+     * Data source is the {@link DataService#_changedFeatures} member variable.
      */
     get changedFC(): OsmGoFeatureCollection {
         const fc = featureCollection([]) as OsmGoFeatureCollection
@@ -87,10 +87,8 @@ export class DataService {
     loadFC$(type: OsmGoFCStorage): Observable<OsmGoFeatureCollection> {
         const storageKey = this.storageKeyFromType(type)
         return from(this.localStorage.get(storageKey)).pipe(
-            map((geojson: OsmGoFeatureCollection) => {
-                geojson = geojson
-                    ? geojson
-                    : (featureCollection([]) as OsmGoFeatureCollection)
+            map((fc: OsmGoFeatureCollection) => {
+                fc = fc ? fc : (featureCollection([]) as OsmGoFeatureCollection)
                 switch (type) {
                     case 'upstream': // fall-through is intentional
                     case 'changed':
@@ -98,19 +96,19 @@ export class DataService {
                             type === 'upstream'
                                 ? this._upstreamFeatures
                                 : this._changedFeatures
-                        for (const feature of geojson.features) {
+                        for (const feature of fc.features) {
                             dataSource[feature.id] = feature
                         }
                         break
                     case 'bbox':
-                        this._bboxFC.features = geojson.features
+                        this._bboxFC.features = fc.features
                         break
                 }
                 if (type === 'changed') {
                     // At this point we know previously created elements from which we can determine the min ID.
                     this.forceNextFeatureIdSync()
                 }
-                return geojson
+                return fc
             })
         )
     }
