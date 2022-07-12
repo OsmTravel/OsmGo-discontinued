@@ -253,7 +253,6 @@ export class DataService {
                 const nextId = this.nextFeatureId
                 feature.properties.id = nextId
                 feature.id = `${feature.properties.type}/${nextId}`
-                console.info('FIXE :', feature.id, feature.properties.id)
 
                 this._changedFeatures[feature.id] = feature
                 delete this._changedFeatures[id]
