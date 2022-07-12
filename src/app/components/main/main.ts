@@ -268,9 +268,9 @@ export class MainPage implements AfterViewInit {
                     baseMaps,
                     bookmarksIds,
                     lastTagsIds,
-                    geojson,
+                    upstreamFC,
                     changedFC,
-                    geojsonBbox,
+                    bboxFC,
                 ]) => {
                     this.locationService.enableGeolocation()
                     this.osmApi.initAuth()
