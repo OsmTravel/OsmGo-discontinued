@@ -14,6 +14,7 @@
         "build": {
           "builder": "ngx-build-plus:browser",
           "options": {
+            "extraWebpackConfig": "webpack.partial.js",
             "outputPath": "www",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -91,6 +92,7 @@
         "serve": {
           "builder": "ngx-build-plus:dev-server",
           "options": {
+            "extraWebpackConfig": "webpack.partial.js",
             "browserTarget": "app:build"
           },
           "configurations": {
@@ -111,6 +113,7 @@
         "test": {
           "builder": "ngx-build-plus:karma",
           "options": {
+            "extraWebpackConfig": "webpack.partial.js",
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",

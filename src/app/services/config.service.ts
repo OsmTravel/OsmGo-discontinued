@@ -139,7 +139,7 @@ export class ConfigService {
         lastView: { lng: 0, lat: 0, zoom: 1, bearing: 0 },
         centerWhenGpsIsReady: true,
         limitFeatures: 10000,
-        pwaBasePath: PWA_BASE_PATH || window.location.origin,
+        pwaBasePath: PWA_BASE_PATH || '',
     }
 
     currentTagsCountryChoice = []
