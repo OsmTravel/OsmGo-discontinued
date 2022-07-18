@@ -50,6 +50,8 @@ export interface Config {
     lastView: { lng: number; lat: number; zoom: number; bearing: number }
     centerWhenGpsIsReady: boolean
     limitFeatures: number
+    /** Base URL of the PWA version, e.g., https://osmtravel.github.io/OsmGo */
+    pwaBasePath: string
 }
 
 @Injectable({ providedIn: 'root' })
@@ -135,6 +137,7 @@ export class ConfigService {
         lastView: { lng: 0, lat: 0, zoom: 1, bearing: 0 },
         centerWhenGpsIsReady: true,
         limitFeatures: 10000,
+        pwaBasePath: process.env.PWA_BASE_PATH || window.location.origin,
     }
 
     currentTagsCountryChoice = []
@@ -536,5 +539,9 @@ export class ConfigService {
     setLastView(lastView) {
         this.config.lastView = lastView
         this.localStorage.set('config', this.config)
+    }
+
+    get pwaBasePath() {
+        return this.config.pwaBasePath
     }
 }

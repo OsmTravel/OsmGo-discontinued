@@ -155,14 +155,14 @@ export class SettingsPage {
             await caches.delete(key)
         }
 
-        const mainLocation = `${window.location.origin}#/main`
+        const mainLocation = `${this.configService.pwaBasePath}#/main`
         window.location.replace(mainLocation)
         window.location.reload()
     }
 
     async changeIsDevServer(isDev: boolean) {
         await this.configService.setIsDevServer(isDev)
-        const mainLocation = `${window.location.origin}#/main`
+        const mainLocation = `${this.configService.pwaBasePath}#/main`
         window.location.replace(mainLocation)
         window.location.reload()
     }

@@ -51,7 +51,7 @@ export class OsmApiService {
     ) {}
 
     initAuth() {
-        const landing = `${window.location.origin}/assets/land.html` // land_single.html
+        const landing = `${this.configService.pwaBasePath}/assets/land.html` // land_single.html
         const windowType = 'newFullPage' // singlepage, popup, newFullPage
 
         this.auth = new osmAuth.default({
