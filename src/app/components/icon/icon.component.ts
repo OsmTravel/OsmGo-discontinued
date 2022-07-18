@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core'
+import { ConfigService } from '@app/services/config.service'
 
 @Component({
     selector: 'app-icon',
@@ -12,9 +13,14 @@ export class IconComponent implements OnInit {
     styleBackgroundPosition
     devicePixelRatio
 
-    constructor() {}
+    constructor(public configService: ConfigService) {}
 
     ngOnInit() {
         this.devicePixelRatio = window.devicePixelRatio > 1 ? 2 : 1
+    }
+
+    get spriteUrl() {
+        const basePath = this.configService.pwaBasePath
+        return `url(${basePath}/assets/iconsSprites@x${this.devicePixelRatio}.png)`
     }
 }
