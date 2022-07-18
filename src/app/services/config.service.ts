@@ -10,6 +10,8 @@ import { TagConfig } from '@osmgo/type'
 import { TagsService } from '@services/tags.service'
 import { CountryCode } from '@osmgo/type'
 
+declare var PWA_BASE_PATH: string
+
 export interface User {
     uid: string
     display_name: string
@@ -61,7 +63,9 @@ export class ConfigService {
         private platform: Platform,
         private http: HttpClient,
         private translate: TranslateService
-    ) {}
+    ) {
+        console.debug(`PWA_BASE_PATH: ${this.pwaBasePath}`)
+    }
     user_info: User = {
         uid: '',
         display_name: '',
@@ -137,7 +141,7 @@ export class ConfigService {
         lastView: { lng: 0, lat: 0, zoom: 1, bearing: 0 },
         centerWhenGpsIsReady: true,
         limitFeatures: 10000,
-        pwaBasePath: process.env.PWA_BASE_PATH || window.location.origin,
+        pwaBasePath: PWA_BASE_PATH || window.location.origin,
     }
 
     currentTagsCountryChoice = []

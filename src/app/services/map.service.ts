@@ -169,22 +169,23 @@ export class MapService {
         this.isProcessing.next(isProcessing)
     }
 
-    loadUnknownMarker(factor: number): void {
+    loadUnknownMarker(basePath: string, factor: number): void {
         const roundedFactor = factor > 1 ? 2 : 1
+        const prefix = `${basePath}/assets/mapStyle/unknown-marker`
         this.map.loadImage(
-            `/assets/mapStyle/unknown-marker/circle-unknown@${roundedFactor}X.png`,
+            `${prefix}/circle-unknown@${roundedFactor}X.png`,
             (error, image) => {
                 this.markerMaplibreUnknown['circle'] = image
             }
         )
         this.map.loadImage(
-            `/assets/mapStyle/unknown-marker/penta-unknown@${roundedFactor}X.png`,
+            `${prefix}/penta-unknown@${roundedFactor}X.png`,
             (error, image) => {
                 this.markerMaplibreUnknown['penta'] = image
             }
         )
         this.map.loadImage(
-            `/assets/mapStyle/unknown-marker/square-unknown@${roundedFactor}X.png`,
+            `${prefix}/square-unknown@${roundedFactor}X.png`,
             (error, image) => {
                 this.markerMaplibreUnknown['square'] = image
             }
@@ -632,7 +633,10 @@ export class MapService {
                         )
                     }
                 })
-                this.loadUnknownMarker(window.devicePixelRatio)
+                this.loadUnknownMarker(
+                    this.configService.pwaBasePath,
+                    window.devicePixelRatio
+                )
             })
         })
 
