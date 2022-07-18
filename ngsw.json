@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1658155204271,
+  "timestamp": 1658164077431,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -186,8 +186,8 @@
         "/index.html",
         "/locationX2-wo-orientation.bfc7d5f5fd0679082745.png",
         "/locationX2.5871f528562184f71733.png",
-        "/main-es2015.5a87eede837861d81419.js",
-        "/main-es5.5a87eede837861d81419.js",
+        "/main-es2015.831dd23bf7aab92e1ba1.js",
+        "/main-es5.831dd23bf7aab92e1ba1.js",
         "/marker-moveX2.09fa6d262b35a36a0e7c.png",
         "/polyfills-core-js-es2015.63e2c757545c2bc38a23.js",
         "/polyfills-core-js-es5.63e2c757545c2bc38a23.js",
@@ -2041,11 +2041,11 @@
     "/assets/workers/worker-formatOsmData.js": "0d42530a83a5cfdb46c01ab93d868bfdfd24edcd",
     "/common-es2015.db0623039d09c5e1e23c.js": "55e984c625d425d32edaab665b197e3114be2261",
     "/common-es5.db0623039d09c5e1e23c.js": "437a2386240ef93b8740a761b2a332dd8bd0d202",
-    "/index.html": "71dde21c3dfb21765d0bb5ad3411940cc7a2b8dc",
+    "/index.html": "d7d1cf000c48d410ba90ade216db9b97d75cda8f",
     "/locationX2-wo-orientation.bfc7d5f5fd0679082745.png": "7dc13e2d08476ab5172bb39aec32dc770bc26421",
     "/locationX2.5871f528562184f71733.png": "db4710a03e011f6be41731b8a4e238671affa8e2",
-    "/main-es2015.5a87eede837861d81419.js": "0108da3b2e2b2db302a574e445964164c4ec1e69",
-    "/main-es5.5a87eede837861d81419.js": "c82b6ac25938c20eb027c23f7075c1cf24a8e24e",
+    "/main-es2015.831dd23bf7aab92e1ba1.js": "4eec4edfb4b1cdb81f5c2a894c80c57caee45c68",
+    "/main-es5.831dd23bf7aab92e1ba1.js": "c13c8018c0b79b3d3b6d8bd3523a3a26e7ee992c",
     "/manifest.webmanifest": "aaf2018e5e6668557e088febcf4e1003109b922b",
     "/marker-moveX2.09fa6d262b35a36a0e7c.png": "86e64d43ca116103a3a2656131a3d40edab3808a",
     "/polyfills-core-js-es2015.63e2c757545c2bc38a23.js": "3bbca1a74f263409e88002f295ee170605b04103",
