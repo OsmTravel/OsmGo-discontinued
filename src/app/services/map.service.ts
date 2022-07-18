@@ -556,8 +556,9 @@ export class MapService {
             map((maplibreStyle) => {
                 let spritesFullPath = `mapStyle/sprites/sprites`
                 // http://localhost:8100/assets/mapStyle/sprites/sprites.json
+                const origin = window.location.origin
                 const basePath = this.configService.pwaBasePath
-                spritesFullPath = `${basePath}/assets/${spritesFullPath}`
+                spritesFullPath = `${origin}${basePath}/assets/${spritesFullPath}`
 
                 maplibreStyle['sprite'] = spritesFullPath
                 return maplibreStyle

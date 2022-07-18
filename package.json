@@ -8,7 +8,7 @@
     "ng": "ng",
     "start": "ng serve --extra-webpack-config webpack.partial.js --host 0.0.0.0",
     "build": "ng build --extra-webpack-config webpack.partial.js --configuration production",
-    "build:gh-pages": "PWA_BASE_PATH=https://osmtravel.github.io/OsmGo npm run build",
+    "build:gh-pages": "PWA_BASE_PATH=/OsmGo npm run build",
     "test": "ng test --extra-webpack-config webpack.partial.js --ts-config src/tsconfig.spec.json --browsers Chrome",
     "test:coverage": "npm run test -- --code-coverage",
     "test:ci": "ng test --extra-webpack-config webpack.partial.js --ts-config src/tsconfig.spec.json --watch=false --browsers=ChromeHeadlessCI --code-coverage",
