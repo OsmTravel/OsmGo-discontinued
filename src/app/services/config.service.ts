@@ -10,6 +10,11 @@ import { TagConfig } from '@osmgo/type'
 import { TagsService } from '@services/tags.service'
 import { CountryCode } from '@osmgo/type'
 
+/**
+ * Global variable that holds the URL base path. E.g., `/osmgo`.
+ * Is set through the environment variable `PWA_BASE_PATH` via webpack
+ * customization.
+ */
 declare var PWA_BASE_PATH: string
 
 export interface User {
@@ -52,7 +57,7 @@ export interface Config {
     lastView: { lng: number; lat: number; zoom: number; bearing: number }
     centerWhenGpsIsReady: boolean
     limitFeatures: number
-    /** Base URL of the PWA version, e.g., https://osmtravel.github.io/OsmGo */
+    /** Base URL of the PWA version. E.g., `/OsmGo` */
     pwaBasePath: string
 }
 
@@ -543,6 +548,7 @@ export class ConfigService {
         this.localStorage.set('config', this.config)
     }
 
+    /** Base URL of the PWA version. E.g., `/OsmGo` */
     get pwaBasePath() {
         return this.config.pwaBasePath
     }

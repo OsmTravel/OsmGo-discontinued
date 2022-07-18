@@ -10,8 +10,6 @@ import {
 import { Marker } from 'maplibre-gl'
 import { MultiPolygon, Polygon } from 'martinez-polygon-clipping'
 
-export declare var PWA_BASE_PATH: string
-
 /**
  * Osm Go! specific geojson feature collection.
  *
