@@ -63,9 +63,7 @@ export class ConfigService {
         private platform: Platform,
         private http: HttpClient,
         private translate: TranslateService
-    ) {
-        console.debug(`PWA_BASE_PATH: ${this.pwaBasePath}`)
-    }
+    ) {}
     user_info: User = {
         uid: '',
         display_name: '',
