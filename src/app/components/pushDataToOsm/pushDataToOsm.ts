@@ -42,7 +42,7 @@ export class PushDataToOsmPage implements AfterViewInit, OnInit, OnDestroy {
         public initService: InitService
     ) {
         this.commentChangeset = this.configService.getChangeSetComment()
-        this.featuresChanges = this.dataService.getGeojsonChanged().features
+        this.featuresChanges = this.dataService.changedFC.features
     }
     ngOnInit(): void {
         if (!this.initService.isLoaded) {
@@ -102,8 +102,8 @@ export class PushDataToOsmPage implements AfterViewInit, OnInit, OnDestroy {
 
     getSummary() {
         const summary = { Total: 0, Create: 0, Update: 0, Delete: 0 }
-        this.featuresChanges = this.dataService.getGeojsonChanged().features
-        const featuresChanged = this.dataService.getGeojsonChanged().features
+        this.featuresChanges = this.dataService.changedFC.features
+        const featuresChanged = this.dataService.changedFC.features
 
         for (let i = 0; i < featuresChanged.length; i++) {
             const featureChanged = featuresChanged[i]
@@ -157,20 +157,14 @@ export class PushDataToOsmPage implements AfterViewInit, OnInit, OnDestroy {
 
             if (diff.typeChange == 'Create') {
                 newFeature = this.mapService.getIconStyle(newFeature) // style
-                this.dataService.deleteFeatureFromGeojsonChanged(
-                    currentFeatureChanged
-                )
-                this.dataService.addFeatureToGeojson(newFeature)
+                this.dataService.deleteFeature('changed', currentFeatureChanged)
+                this.dataService.addOrUpdateFeature('upstream', newFeature)
             } else if (diff.typeChange == 'Update') {
                 newFeature = this.mapService.getIconStyle(newFeature) // style
-                this.dataService.deleteFeatureFromGeojsonChanged(
-                    currentFeatureChanged
-                )
-                this.dataService.addFeatureToGeojson(newFeature)
+                this.dataService.deleteFeature('changed', currentFeatureChanged)
+                this.dataService.addOrUpdateFeature('upstream', newFeature)
             } else if (diff.typeChange == 'Delete') {
-                this.dataService.deleteFeatureFromGeojsonChanged(
-                    currentFeatureChanged
-                )
+                this.dataService.deleteFeature('changed', currentFeatureChanged)
             }
         }
     }
@@ -267,9 +261,9 @@ export class PushDataToOsmPage implements AfterViewInit, OnInit, OnDestroy {
         if (!resId) {
             return null
         }
-        const feature = this.dataService
-            .getGeojsonChanged()
-            .features.find((f) => f.id == resId)
+        const feature = this.dataService.changedFC.features.find(
+            (f) => f.id == resId
+        )
         return feature
     }
 
@@ -314,7 +308,7 @@ export class PushDataToOsmPage implements AfterViewInit, OnInit, OnDestroy {
             .getValidChangset(commentChangeset, password)
             .pipe(take(1))
             .subscribe((CS) => {
-                const features = this.dataService.getGeojsonChanged().features
+                const features = this.dataService.changedFC.features
                 this.changesetId = CS
                 const diffFile = this.osmApi.osmGoFeaturesToOsmDiffFile(
                     features,
@@ -331,13 +325,13 @@ export class PushDataToOsmPage implements AfterViewInit, OnInit, OnDestroy {
                                 features
                             )
                             this.mapService.eventMarkerReDraw.emit(
-                                this.dataService.getGeojson()
+                                this.dataService.upstreamFC
                             )
                             this.mapService.eventMarkerChangedReDraw.emit(
-                                this.dataService.getGeojsonChanged()
+                                this.dataService.changedFC
                             )
                             this.featuresChanges =
-                                this.dataService.getGeojsonChanged().features
+                                this.dataService.changedFC.features
                             this.error = undefined
                             this.summary = this.getSummary()
                             this.uploadedOk = true
@@ -380,31 +374,31 @@ export class PushDataToOsmPage implements AfterViewInit, OnInit, OnDestroy {
 
     cancelErrorFeature(feature) {
         this.dataService.cancelFeatureChange(feature)
-        this.featuresChanges = this.dataService.getGeojsonChanged().features
-        this.mapService.eventMarkerReDraw.emit(this.dataService.getGeojson())
+        this.featuresChanges = this.dataService.changedFC.features
+        this.mapService.eventMarkerReDraw.emit(this.dataService.upstreamFC)
         this.mapService.eventMarkerChangedReDraw.emit(
-            this.dataService.getGeojsonChanged()
+            this.dataService.changedFC
         )
         this.error = undefined
     }
 
     async cancelAllFeatures() {
         // rollBack
-        const featuresChanged = this.dataService.getGeojsonChanged().features
+        const featuresChanged = this.dataService.changedFC.features
         for (let feature of featuresChanged) {
             this.dataService.cancelFeatureChange(feature)
         }
-        await this.dataService.resetGeojsonChanged()
+        await this.dataService.clear('changed')
         this.summary = this.getSummary()
-        this.featuresChanges = this.dataService.getGeojsonChanged().features
+        this.featuresChanges = this.dataService.changedFC.features
         timer(100)
             .pipe(take(1))
             .subscribe((t) => {
                 this.mapService.eventMarkerReDraw.emit(
-                    this.dataService.getGeojson()
+                    this.dataService.upstreamFC
                 )
                 this.mapService.eventMarkerChangedReDraw.emit(
-                    this.dataService.getGeojsonChanged()
+                    this.dataService.changedFC
                 )
                 this.mapService.isProcessing.next(false)
                 this.navCtrl.pop()

@@ -29,7 +29,7 @@
         <!-- Top right button to upload changes on OSM -->
         <ion-fab
             style="right: 0; top: 0; margin: 6px; margin-right: 46px"
-            *ngIf="dataService.geojsonChanged && dataService.geojsonChanged.features.length > 0 && !mapService.markerMoving"
+            *ngIf="dataService.changedFC && dataService.changedFC.features.length > 0 && !mapService.markerMoving"
         >
             <ion-fab-button (click)="navCtrl.navigateForward('/pushData')">
                 <ion-icon name="cloud-upload"></ion-icon>

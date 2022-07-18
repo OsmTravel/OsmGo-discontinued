@@ -571,7 +571,8 @@ export class OsmApiService {
         feature.properties.originalData = null
         addAttributesToFeature(feature)
         return from(
-            this.dataService.addFeatureToGeojsonChanged(
+            this.dataService.addOrUpdateFeature(
+                'changed',
                 this.mapService.getIconStyle(feature)
             )
         )
@@ -584,20 +585,22 @@ export class OsmApiService {
         if (origineData === 'data_changed') {
             // il a déjà été modifié == if (feature.properties.changeType)
             return from(
-                this.dataService.updateFeatureToGeojsonChanged(
+                this.dataService.addOrUpdateFeature(
+                    'changed',
                     this.mapService.getIconStyle(feature)
                 )
             )
         } else {
-            // jamais été modifié, n'exite donc pas dans this.geojsonChanged mais dans le this.geojson
+            // jamais été modifié, n'exite donc pas dans this.changedFC mais dans le this.geojson
             feature.properties.changeType = 'Update'
             feature.properties.originalData = this.dataService.getFeatureById(
                 feature.properties.id,
                 'data'
             )
-            this.dataService.deleteFeatureFromGeojson(feature)
+            this.dataService.deleteFeature('upstream', feature)
             return from(
-                this.dataService.addFeatureToGeojsonChanged(
+                this.dataService.addOrUpdateFeature(
+                    'changed',
                     this.mapService.getIconStyle(feature)
                 )
             )
@@ -613,29 +616,32 @@ export class OsmApiService {
             // il a déjà été modifié
             if (feature.properties.changeType === 'Create') {
                 // il n'est pas sur le serveur, on le supprime des 2 geojson
-                this.dataService.deleteFeatureFromGeojsonChanged(feature)
+                this.dataService.deleteFeature('changed', feature)
             } else if (feature.properties.changeType === 'Update') {
                 // on reprend les données originales
-                this.dataService.updateFeatureToGeojson(
+                this.dataService.addOrUpdateFeature(
+                    'upstream',
                     feature.properties.originalData
                 )
                 feature.properties.changeType = 'Delete'
                 return from(
-                    this.dataService.updateFeatureToGeojsonChanged(
+                    this.dataService.addOrUpdateFeature(
+                        'changed',
                         this.mapService.getIconStyle(feature)
                     )
                 )
             }
         } else {
-            // jamais été modifié, n'exite donc pas dans this.geojsonChanged
+            // jamais été modifié, n'exite donc pas dans this.changedFC
             feature.properties.changeType = 'Delete'
             feature.properties.originalData = this.dataService.getFeatureById(
                 feature.properties.id,
                 'data'
             )
-            this.dataService.deleteFeatureFromGeojson(feature)
+            this.dataService.deleteFeature('upstream', feature)
             return from(
-                this.dataService.addFeatureToGeojsonChanged(
+                this.dataService.addOrUpdateFeature(
+                    'changed',
                     this.mapService.getIconStyle(feature)
                 )
             )
@@ -659,7 +665,7 @@ export class OsmApiService {
         limitFeatures: number = 10000
     ) {
         const that = this
-        const oldBbox = this.dataService.getGeojsonBbox()
+        const oldBbox = this.dataService.bboxFC
         const oldBboxFeature = cloneDeep(oldBbox.features[0])
 
         return from(
@@ -710,8 +716,8 @@ export class OsmApiService {
                 switchMap((osmData) =>
                     this.formatOsmJsonData$(
                         osmData,
-                        this.dataService.getGeojson(),
-                        this.dataService.getGeojsonChanged(),
+                        this.dataService.upstreamFC,
+                        this.dataService.changedFC,
                         limitFeatures
                     )
                 ),
