@@ -10,19 +10,19 @@ Map your environment simply and fast, directly from the app. Keep your eyes wide
 
 ## Desktop
 
-Navigate to **https://osmgo.com** or install the [PWA](https://osmgo.com).
+Navigate to **https://osmtravel.github.io/OsmGo** or install the [PWA](https://osmtravel.github.io/OsmGo).
 
 ## Android
 
-Get the app on [Google Play](https://play.google.com/store/apps/details?id=fr.dogeo.osmgo), download [APK](https://github.com/DoFabien/OsmGo/releases/latest) on GitHub or [install it as a PWA](https://osmgo.com)
+Get the app on [Google Play](https://play.google.com/store/apps/details?id=fr.dogeo.osmgo), download [APK](https://github.com/DoFabien/OsmGo/releases/latest) on GitHub or [install it as a PWA](https://osmtravel.github.io/OsmGo)
 
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=fr.dogeo.osmgo) [<img src="https://user-images.githubusercontent.com/663460/26973090-f8fdc986-4d14-11e7-995a-e7c5e79ed925.png" alt="Download APK from GitHub" height="80">](https://github.com/DoFabien/OsmGo/releases)
 
 ## iOS
 
-Install on iOS as a [PWA](https://osmgo.com):
+Install on iOS as a [PWA](https://osmtravel.github.io/OsmGo):
 
-[<img style="verical-align:middle" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Safari_browser_logo.svg/60px-Safari_browser_logo.svg.png" alt="Install on iOS as a PWA" height="60">](https://osmgo.com)
+[<img style="verical-align:middle" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Safari_browser_logo.svg/60px-Safari_browser_logo.svg.png" alt="Install on iOS as a PWA" height="60">](https://osmtravel.github.io/OsmGo)
 
 # User manual
 

@@ -19,9 +19,9 @@ Read folowing article: [Settings](Settings.md)
 | Platform | Solution                                                                            |
 | -------- | ----------------------------------------------------------------------------------- |
 | Android  | [OsmGo! on PlayStore](https://play.google.com/store/apps/details?id=fr.dogeo.osmgo) |
-| Android  | [OsmGo! Progressive Web App](https://osmgo.com)                                     |
-| iOS      | [OsmGo! Progressive Web App](https://osmgo.com)                                     |
-| Desktop  | [OsmGo! Web App](https://osmgo.com)                                                 |
+| Android  | [OsmGo! Progressive Web App](https://osmtravel.github.io/OsmGo)                     |
+| iOS      | [OsmGo! Progressive Web App](https://osmtravel.github.io/OsmGo)                     |
+| Desktop  | [OsmGo! Web App](https://osmtravel.github.io/OsmGo)                                 |
 
 # Contributing
 
