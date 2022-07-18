@@ -661,4 +661,10 @@ export class ModalsContentPage implements OnInit {
         }
         this.cdr.detectChanges()
     }
+
+    /** Resolve a path relative to the assets folder. */
+    getAssetPath(relPath: string): string {
+        const relPathPatched = relPath.startsWith('/') ? relPath : '/' + relPath
+        return `${this.configService.pwaBasePath}/assets${relPathPatched}`
+    }
 }
