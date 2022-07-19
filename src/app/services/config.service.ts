@@ -12,10 +12,10 @@ import { CountryCode } from '@osmgo/type'
 
 /**
  * Global variable that holds the URL base path. E.g., `/osmgo`.
- * Is set through the environment variable `PWA_BASE_PATH` via webpack
+ * Is set through the environment variable `URL_BASE_PATH` via webpack
  * customization.
  */
-declare var PWA_BASE_PATH: string
+declare var URL_BASE_PATH: string
 
 export interface User {
     uid: string
@@ -144,7 +144,7 @@ export class ConfigService {
         lastView: { lng: 0, lat: 0, zoom: 1, bearing: 0 },
         centerWhenGpsIsReady: true,
         limitFeatures: 10000,
-        pwaBasePath: PWA_BASE_PATH || '',
+        pwaBasePath: URL_BASE_PATH || '',
     }
 
     currentTagsCountryChoice = []
