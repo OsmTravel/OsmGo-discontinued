@@ -1,0 +1,90 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/OsmGo/index.html",
+  "assetGroups": [
+    {
+      "name": "i18n",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": ["/OsmGo/assets/i18n/**", "/osmgo/manifest.webmanifest"]
+      }
+    },
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/OsmGo/favicon.ico",
+          "/OsmGo/index.html",
+          "*.css",
+          "*.js",
+          "/OsmGo/assets/osmtogeojson.js",
+
+          "/OsmGo/svg/md-menu.svg",
+          "/OsmGo/svg/md-refresh.svg",
+          "/OsmGo/svg/md-image.svg",
+          "/OsmGo/svg/md-arrow-back.svg",
+          "/OsmGo/svg/md-add.svg",
+          "/OsmGo/svg/md-locate.svg",
+          "/OsmGo/svg/md-close.svg",
+          "/OsmGo/svg/md-checkmark.svg",
+          "/OsmGo/svg/md-code.svg",
+          "/OsmGo/svg/md-move.svg",
+          "/OsmGo/svg/md-settings.svg",
+          "/OsmGo/svg/md-search.svg",
+          "/OsmGo/svg/md-code-working.svg",
+          "/OsmGo/svg/md-log-in.svg",
+          "/OsmGo/svg/md-star.svg",
+          "/OsmGo/svg/md-help-circle",
+          "/OsmGo/svg/md-trash.svg",
+          "/OsmGo/svg/md-help-circle.svg",
+          "/OsmGo/svg/md-cloud-upload.svg",
+          "/OsmGo/svg/md-heart.svg",
+          "/OsmGo/svg/md-create.svg",
+          "/OsmGo/svg/md-checkmark-circle-outline.svg",
+          "/OsmGo/svg/md-time.svg",
+          "/OsmGo/assets/ionicons/ionicons_save.svg",
+          "/OsmGo/assets/ionicons/ionicons_restore-save.svg",
+          "*.png"
+        ]
+      }
+    },
+
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/OsmGo/assets/**",
+          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "tilesMap",
+      "urls": [
+        "https://a.tiles.mapbox.com/**",
+        "https://b.tiles.mapbox.com/**",
+        "https://c.tiles.mapbox.com/**",
+
+        "https://api.mapbox.com/v4/**",
+
+        "https://wxs.ign.fr/pratique/geoportail/**",
+
+        "https://ecn.t0.tiles.virtualearth.net/**",
+        "https://ecn.t1.tiles.virtualearth.net/**",
+        "https://ecn.t2.tiles.virtualearth.net/**",
+        "https://ecn.t3.tiles.virtualearth.net/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 800,
+        "maxAge": "15d",
+        "strategy": "performance"
+      }
+    }
+  ]
+}
